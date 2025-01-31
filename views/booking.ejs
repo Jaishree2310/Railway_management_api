@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Seat</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Book Your Seat</h1>
+    </header>
+
+    <div class="form-container">
+        <form id="bookingForm" action="/api/bookings/book" method="POST">
+            <label for="trainId">Train ID:</label>
+            <input type="text" id="trainId" name="trainId" readonly>
+
+            <label for="seats">Number of Seats:</label>
+            <input type="number" id="seats" name="seats" min="1" required>
+
+            <button type="submit" class="button">Book Seat</button>
+        </form>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <script>
+        // Get trainId from URL parameters
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trainId = urlParams.get('trainId');
+            document.getElementById('trainId').value = trainId;
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                trainId: formData.get('trainId'),
+                seats: parseInt(formData.get('seats'))
+            };
+
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const response = await fetch('/api/bookings/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.location.href = `/bookings/confirmation/${result.bookingId}`;
+                } else {
+                    document.getElementById('errorMessage').textContent = result.error;
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'Booking failed. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,10 +1,9 @@
-// config/database.js
 module.exports = {
   DB_CONFIG: {
     host: 'localhost',
-    user: 'jaya',
-    password: 'userjaya',
-    database: 'railway_management_api',
+    user: 'root',
+    password: 'Jaya@2310',
+    database: 'railway_management_systems',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

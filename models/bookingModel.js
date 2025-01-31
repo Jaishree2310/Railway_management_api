@@ -9,7 +9,6 @@ class BookingModel {
       // Start transaction for race condition handling
       await connection.beginTransaction();
 
-      // Check seat availability with row-level locking
       const [trainRows] = await connection.execute(
         'SELECT available_seats FROM trains WHERE id = ? FOR UPDATE',
         [trainId]

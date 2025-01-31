@@ -1,5 +1,4 @@
 const TrainModel = require('../models/trainModel');
-
 class TrainController {
   static async addTrain(req, res) {
     try {

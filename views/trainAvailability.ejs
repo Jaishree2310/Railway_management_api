@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Availability</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Available Trains</h1>
+    </header>
+
+    <div class="container">
+        <ul class="train-list">
+            <% trains.forEach(train => { %>
+                <li class="train-item">
+                    <h3><%= train.name %></h3>
+                    <div class="train-details">
+                        <p>Train ID: <%= train.id %></p>
+                        <p>Route: <%= train.source %> to <%= train.destination %></p>
+                        <p>Total Seats: <%= train.total_seats %></p>
+                        <p>Available Seats: <%= train.available_seats %></p>
+                        <p>Created At: <%= train.created_at %></p>
+                    </div>
+                    <div class="booking-section">
+                        <% if (train.available_seats > 0) { %>
+                            <button 
+                                onclick="bookTrain('<%= train.id %>')" 
+                                class="book-button"
+                            >
+                                Book Now
+                            </button>
+                        <% } else { %>
+                            <button class="book-button disabled" disabled>
+                                Sold Out
+                            </button>
+                        <% } %>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+
+    <script>
+        async function bookTrain(trainId) {
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                // Instead of making API call, redirect to booking form
+                window.location.href = `/booking?trainId=${trainId}`;
+                
+            } catch (error) {
+                alert('Navigation failed. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
